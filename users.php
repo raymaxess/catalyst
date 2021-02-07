@@ -43,10 +43,11 @@ class Users {
     $message .= "--file [csv file name] - this is the name of the CSV to be parsed \n";
     $message .= "--create_table - this will cause the MySQL users table to be built (and no further action will be taken) \n";
     $message .= "--dry_run - this will be used with the --file directive in case we want to run the script but not insert into the DB. All other functions will be executed, but the database won't be altered \n";
-    $message .= "-u - MySQL username \n";
-    $message .= "-p - MySQL password \n";
-    $message .= "-h - MySQL host \n";
-    $message .= "-d - MYSQL database \n";
+    $message .= "-u [MySQL username] \n";
+    $message .= "-p [MySQL password] \n";
+    $message .= "-h [MySQL hostname] \n";
+    $message .= "-d [MYSQL database] \n";
+    $message .= "e.g. php user_upload.php --file users.csv -u root -p my_password -h localhost -d catalyst --create_table --dry_run \n";
 
     print $message;
   }
