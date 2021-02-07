@@ -4,7 +4,7 @@ include_once('db.php');
 include_once('users.php');
 
 $options = Users::getOptions();
-print_r($options);
+// print_r($options);
 $isNotDryRun = isset($options['dry_run']) ? false : true;
 if (isset($options['help'])) Users::displayHelp();
 
