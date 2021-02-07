@@ -4,13 +4,14 @@ class Db {
   private $db_host = '';
   private $db_user = "";
   private $db_pass = "";
-  private $db_name = "catalyst";
+  private $db_name = "";
   private $con = false;
 
-  public function __construct($host, $user, $pass) {
+  public function __construct($host, $user, $pass, $name) {
     $this->db_host = $host;
     $this->db_user = $user;
     $this->db_pass = $pass;
+    $this->db_name = $name;
   }
 
   public function connect() {

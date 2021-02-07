@@ -7,6 +7,7 @@ class Users {
     $shortopts .= "u:";
     $shortopts .= "p::";
     $shortopts .= "h:";
+    $shortopts .= "d:";
 
     $longopts  = array(
                   "file:",
@@ -15,6 +16,39 @@ class Users {
                   "help");
 
     return getopt($shortopts, $longopts);
+  }
+
+  public static function validateOptions($options) {
+    $error = '';
+    $required = array('p');
+    $requiredWithValue = array('file', 'u', 'h', 'd');
+
+    foreach($requiredWithValue as $option) {
+      if (!isset($options[$option])) {
+        $error .= "Missing/Invalid option => $option \n";
+      }
+    }
+
+    foreach($required as $option) {
+      if (!isset($options[$option])) {
+        $error .= "Missing option => $option \n";
+      }
+    }
+
+    return $error;
+  }
+
+  public static function displayHelp() {
+    $message = "Script Command Line Directives: \n";
+    $message .= "--file [csv file name] - this is the name of the CSV to be parsed \n";
+    $message .= "--create_table - this will cause the MySQL users table to be built (and no further action will be taken) \n";
+    $message .= "--dry_run - this will be used with the --file directive in case we want to run the script but not insert into the DB. All other functions will be executed, but the database won't be altered \n";
+    $message .= "-u - MySQL username \n";
+    $message .= "-p - MySQL password \n";
+    $message .= "-h - MySQL host \n";
+    $message .= "-d - MYSQL database \n";
+
+    print $message;
   }
 
   public static function normalizeName($val) {
