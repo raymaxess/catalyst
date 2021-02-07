@@ -6,12 +6,11 @@ class Db {
   private $db_pass = "";
   private $db_name = "catalyst";
   private $con = false;
-  private $myTable = "users";
 
   public function __construct($host, $user, $pass) {
     $this->db_host = $host;
     $this->db_user = $user;
-    $this->db_pass = '';
+    $this->db_pass = $pass;
   }
 
   public function connect() {
@@ -36,42 +35,6 @@ class Db {
     else {
       return true;
     }
-  }
-
-  public function createTable() {
-
-    $this->dropTable($this->myTable);
-
-    $q = "CREATE TABLE " . $this->myTable . " (name varchar(32) DEFAULT NULL, surname varchar(32) DEFAULT NULL, email varchar(32) NOT NULL, UNIQUE KEY unique_email (email))";
-    $query = @mysql_query($q);
-
-    if($query) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private function dropTable($table) {
-    $q = "DROP TABLE IF EXISTS $table";
-    $query = @mysql_query($q);
-
-    if($query) {
-      return true;
-    }
-
-    return false;
-  }
-
-  function insert($data) {
-    $q = "INSERT INTO " . $this->myTable . " (name, surname, email) VALUES ('" . $data['name'] . "', '" . $data['surname'] . "', '" . $data['email'] . "')";
-    $query = @mysql_query($q);
-
-    if($query) {
-      return true;
-    }
-
-    return false;
   }
 }
 ?>

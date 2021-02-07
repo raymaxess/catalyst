@@ -1,39 +1,21 @@
 <?php
 
-include('db.php');
+include_once('db.php');
+include_once('users.php');
 
-function getOptions() {
-  $shortopts  = '';
-  $shortopts .= "u:";
-  $shortopts .= "p::";
-  $shortopts .= "h:";
-
-  $longopts  = array(
-      "file:",
-      "create_table",
-      "dry_run",
-      "help",
-  );
-
-  return getopt($shortopts, $longopts);
-}
-
-function trimArrayValues($row) {
-  $out = null;
-
-  foreach($row as $v) {
-    $out[] = trim($v);
-  }
-
-  return $out;
-}
-
-$options = getOptions();
+$options = Users::getOptions();
 print_r($options);
 
 $db = new Db($options['h'], $options['u'], $options['p']);
-$db->connect();
-$db->createTable();
+$res = $db->connect();
+if (!$res) {
+  die("Unable to establish database connection, exit script.");
+}
+
+$res = Users::createTable();
+if (!$res) {
+  die("Unable to create users table, exit script.");
+}
 
 $filename = "data/" . $options['file'];
 $header = NULL;
@@ -43,16 +25,30 @@ if (($handle = fopen($filename, 'r')) !== FALSE)
   while (($row = fgetcsv($handle, 1000, ',')) !== FALSE)
   {
     if(!$header) {
-      $header = trimArrayValues($row);
+      $header = Users::trimArrayValues($row);
+
+      if (!in_array("name", $header) || !in_array("surname", $header) || !in_array("email", $header)) {
+        die("Error: Invalid header, exit script.");
+      }
+
       continue;
     }
 
-    $row = trimArrayValues($row);
+    $row = Users::trimArrayValues($row);
     $rec = array_combine($header, $row);
+
+    if (!filter_var($rec['email'], FILTER_VALIDATE_EMAIL)) {
+      print "Error: Invalid email. " . $rec['email'] . "\n";
+      continue;
+    }
+
+    $rec['name'] = Users::normalizeName($rec['name']);
+    $rec['surname'] = Users::normalizeName($rec['surname']);
+    $rec['email'] = Users::normalizeEmail($rec['email']);
+
     print_r($rec);
 
-    $db->insert($rec);
-
+    Users::insert($rec);
   }
   fclose($handle);
 }
