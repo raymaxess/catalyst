@@ -42,18 +42,14 @@ class Db {
 
     $this->dropTable($this->myTable);
 
-    // Create Table
-    $q = "CREATE TABLE " . $this->myTable . " (
-      name varchar(32) DEFAULT NULL,
-      surname varchar(32) NOT NULL,
-      email varchar(32) NOT NULL,
-      UNIQUE KEY unique_email (email)
-    )";
+    $q = "CREATE TABLE " . $this->myTable . " (name varchar(32) DEFAULT NULL, surname varchar(32) DEFAULT NULL, email varchar(32) NOT NULL, UNIQUE KEY unique_email (email))";
     $query = @mysql_query($q);
 
     if($query) {
-      print "Created table \n";
+      return true;
     }
+
+    return false;
   }
 
   private function dropTable($table) {
@@ -61,8 +57,21 @@ class Db {
     $query = @mysql_query($q);
 
     if($query) {
-      print "Deleted table \n";
+      return true;
     }
+
+    return false;
+  }
+
+  function insert($data) {
+    $q = "INSERT INTO " . $this->myTable . " (name, surname, email) VALUES ('" . $data['name'] . "', '" . $data['surname'] . "', '" . $data['email'] . "')";
+    $query = @mysql_query($q);
+
+    if($query) {
+      return true;
+    }
+
+    return false;
   }
 }
 ?>
